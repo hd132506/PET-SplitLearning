@@ -140,48 +140,6 @@ python run.py --method pet_crs \
 
 ---
 
-## Expected Output
-
-```
-============================================================
-  Method : PET_CRS
-  Device : cuda:0
-============================================================
-
-[1/4] Loading AGNews dataset …
-  Train: 4800, Val: 1200, Aux: 6000
-
-[2/4] Building models …
-  PET: True  |  CRS: True
-  Client params: 16,449,536
-  Server params: 18,882,306
-
-[3/4] Training (5 epochs) …
-  Epoch 1/5  train_loss=0.6931  val_loss=0.5812  val_acc=0.7640
-  ...
-  ★ Best Val Accuracy : 0.9663
-
-[4/4] Running reconstruction attack (FORA-style) …
-  Aligning mimic client via MK-MMD …
-  Training inversion (reconstruction) model …
-  Evaluating reconstruction quality …
-
-============================================================
-  RESULTS  —  Method: PET_CRS
-============================================================
-  Downstream Task Accuracy : 0.9663
-
-  Reconstruction Attack Metrics (lower = better privacy):
-    Cosine Similarity : 0.0708
-    BLEU              : 0.0067
-    ROUGE-1           : 0.0668
-    ROUGE-2           : 0.0037
-    ROUGE-L           : 0.0517
-============================================================
-```
-
-Reference values are from Table 4 of the paper (AGNews, PET+CRS row).
-
 ---
 
 ## Architecture
@@ -207,19 +165,6 @@ Client (device)                         Server
 - 128 dimensions → **suppress** (`−` mask, L1 regularization to minimize)
 - 256 dimensions → free (no constraint)
 - Masks are randomized per client using a fixed seed → each client has a unique embedding space
-
----
-
-## Paper–Code Mapping
-
-| Paper | File | Symbol |
-|-------|------|--------|
-| Eq. 5 — PET transform | `models.py: T5ClientModel.forward` | `h' = Σ fj(h_Ij)` |
-| Eq. 11–12 — Ltrans | `models.py: pet_reg_loss()` | `Lamp + Lsup` |
-| Eq. 9 — CRS InfoNCE | `trainer.py: supervised_contrastive_loss()` | `Lcont` |
-| Eq. 10 — Unified loss | `trainer.py: train_one_epoch()` | `Ltotal = Ltask + Ltrans + α·Lcont` |
-| Eq. 22–23 — MK-MMD | `attack.py: mk_mmd()` | `L_MK-MMD` |
-| Eq. 24–25 — DRA | `attack.py: train_inversion_model()` | `L_rec` |
 
 ---
 
