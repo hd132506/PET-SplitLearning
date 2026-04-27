@@ -140,8 +140,6 @@ python run.py --method pet_crs \
 
 ---
 
----
-
 ## Architecture
 
 ```
